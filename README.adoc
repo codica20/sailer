@@ -1,0 +1,7 @@
+= sailer_cli - Zugriff auf Sailer-Remoteportal von der Kommandozeile
+
+== Benutzung
+
+```bash
+  npx sailer --version
+```
