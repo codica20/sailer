@@ -31,6 +31,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@rushstack/ts-command-line": "^5.0.1"
+    "@rushstack/ts-command-line": "^5.0.1",
+    "dotenv": "^16.5.0"
   }
 }

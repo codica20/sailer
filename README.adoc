@@ -1,5 +1,11 @@
 = sailer_cli - Zugriff auf Sailer-Remoteportal von der Kommandozeile
 
+== Vorbereitung 
+
+Setze 
+  SAILER_PASSWORD=geheim
+  SAILER_USER=sailerBenutzer
+
 == Benutzung
 
 ```bash
