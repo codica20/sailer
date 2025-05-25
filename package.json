@@ -10,6 +10,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "build": "tsc",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- ",
     "dev:version": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- '--version'"
   },
   "keywords": [
@@ -32,6 +33,7 @@
   },
   "dependencies": {
     "@rushstack/ts-command-line": "^5.0.1",
-    "dotenv": "^16.5.0"
+    "dotenv": "^16.5.0",
+    "puppeteer": "^24.9.0"
   }
 }
