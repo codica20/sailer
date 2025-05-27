@@ -1,11 +1,12 @@
 import vControllerData from "../../data/vControllerData.json";
-import { units } from "./analyzeData";
+import { titles, units } from "./analyzeData";
 
 describe("tests analyzeData.ts", () => {
   test("sample vControllerData exists", () => {
     expect.assertions(1);
     expect(vControllerData).toHaveProperty("_parameter");
   });
+
   test("Different units of measurements exist", () => {
     const result = units(vControllerData);
     expect(result).toStrictEqual([
@@ -22,6 +23,15 @@ describe("tests analyzeData.ts", () => {
       "min",
       "s",
       "K",
+    ]);
+  });
+  test("Different titles exist", () => {
+    const result = titles(vControllerData);
+    expect(result).toHaveLength(333);
+    expect(result.slice(0, 3)).toStrictEqual([
+      "1. Nachstellzeit",
+      "1. P-Faktor",
+      "1. Zapffluss",
     ]);
   });
 });
