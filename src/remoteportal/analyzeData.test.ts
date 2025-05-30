@@ -1,5 +1,10 @@
 import vControllerData from "../../data/vControllerData.json";
-import { titles, units } from "./analyzeData";
+import {
+  org_params,
+  titles,
+  uniqTitles,
+  units,
+} from "./analyzeData";
 
 describe("tests analyzeData.ts", () => {
   test("sample vControllerData exists", () => {
@@ -25,6 +30,7 @@ describe("tests analyzeData.ts", () => {
       "K",
     ]);
   });
+
   test("Different titles exist", () => {
     const result = titles(vControllerData);
     expect(result).toHaveLength(333);
@@ -33,5 +39,14 @@ describe("tests analyzeData.ts", () => {
       "1. P-Faktor",
       "1. Zapffluss",
     ]);
+  });
+
+  test("Uniqtitles are unique", () => {
+    const titleArray = uniqTitles(vControllerData);
+    console.log(
+      titleArray.filter((title) => title.includes("ollekt"))
+    );
+    const paramArray = org_params(vControllerData);
+    expect(titleArray.length).toEqual(paramArray.length);
   });
 });
