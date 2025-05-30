@@ -4,13 +4,21 @@ export type VControllerData = {
 };
 
 export type VCDParamValue = {
+  parameter_group_title?:string;
   title: string;
+  title_short1: string|null;
   title_translated: string | number;
+  value: string;
+  factor: string;
+  unit: string|null;
+  /** "0"|"1" */
+  is_readonly:string;
+  parameter_type:string;
   value_list?: VList;
-  [key: string]: string | null | number | VList | undefined;
+//  [key: string]: string | null | number | VList | undefined;
 };
 
-export type VList = {[key:string]:string} | string[];
+export type VList = { [key: string]: string } | string[];
 
 export function units(vControllerData: VControllerData) {
   const unitArray = Object.values(
@@ -29,7 +37,7 @@ export function titles(vControllerData: VControllerData) {
 export function uniqTitles(
   vControllerData: VControllerData
 ) {
-  const result = org_params(vControllerData).map((param) =>
+  const result = orgParams(vControllerData).map((param) =>
     uniqTitle(param)
   );
   return result.sort();
@@ -40,15 +48,46 @@ export function uniqTitle({
   title,
   title_short1,
 }: VCDParamValue): string {
-  const prefix=parameter_group_title?`${parameter_group_title}_`:""
-  const suffix=title_short1?`_${title_short1}`:"";
+  const prefix = parameter_group_title
+    ? `${parameter_group_title}_`
+    : "";
+  const suffix = title_short1 ? `_${title_short1}` : "";
   return `${prefix}${title}${suffix}`;
 }
 
-export function org_params(
+/** calculates value from factor and original value.
+ * 
+ */
+export function parsedValue({factor,value}:VCDParamValue):number {
+  const parsedFactor=parseFloat(factor);
+  const parsedOrgValue=parseInt(value);
+  const result=parsedFactor*parsedOrgValue;
+  return result;
+}
+
+export function orgParams(
   vControllerData: VControllerData
 ): VCDParamValue[] {
   return Object.values(vControllerData._parameter);
+}
+
+export function getOrgParam(
+  vControllerData: VControllerData,
+  uniqueTitle: string
+): VCDParamValue {
+  const result = orgParams(vControllerData).find(
+    (param) => uniqTitle(param) === uniqueTitle
+  );
+  if (result) return result;
+  else
+    throw Error(`Unique title ${uniqueTitle} not found!`);
+}
+
+export function interpretedValue(param:VCDParamValue) {
+  const title=uniqTitle(param);
+  const value=parsedValue(param);
+  const readOnly=param.is_readonly==="1";
+  const type=param.parameter_type;
 }
 
 /** returns an array with unique elements

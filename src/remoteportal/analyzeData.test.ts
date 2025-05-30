@@ -1,6 +1,8 @@
 import vControllerData from "../../data/vControllerData.json";
 import {
-  org_params,
+  getOrgParam,
+  orgParams,
+  parsedValue,
   titles,
   uniqTitles,
   units,
@@ -44,9 +46,30 @@ describe("tests analyzeData.ts", () => {
   test("Uniqtitles are unique", () => {
     const titleArray = uniqTitles(vControllerData);
     console.log(
-      titleArray.filter((title) => title.includes("ollekt"))
+      titleArray.filter((title) => title.includes("UM1"))
     );
-    const paramArray = org_params(vControllerData);
+    const paramArray = orgParams(vControllerData);
     expect(titleArray.length).toEqual(paramArray.length);
+  });
+
+  test("Kollektortemperatur", () => {
+    const result = getOrgParam(
+      vControllerData,
+      "F1: Kollektor"
+    );
+    console.log({ result });
+    expect(result.value).toEqual("192");
+    expect(parsedValue(result)).toBeCloseTo(19.2);
+  });
+
+
+  test("Heizanforderung", () => {
+    const result = getOrgParam(
+      vControllerData,
+      "Ausgänge_UM1"
+    );
+    console.log({ result });
+    expect(result.value).toEqual("1");
+    expect(parsedValue(result)).toEqual(1);
   });
 });
