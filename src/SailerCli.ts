@@ -5,6 +5,7 @@ import {
   CommandLineParameterWithArgument,
 } from "@rushstack/ts-command-line";
 import { listKeys } from "./actions/list_keys";
+import { getParam } from "./actions/get_param";
 
 export class SailerCli extends CommandLineParser {
   public constructor() {
@@ -13,6 +14,7 @@ export class SailerCli extends CommandLineParser {
       toolDescription: "Holt Zustände vom SAILER Master.",
     });
     this.addAction(new ListKeysAction());
+    this.addAction(new GetParamAction());
     this.addAction(new VersionAction());
   }
 }
@@ -31,6 +33,8 @@ class VersionAction extends CommandLineAction {
     });
   }
 }
+
+
 class ListKeysAction extends CommandLineAction {
   public _dryRun: CommandLineFlagParameter;
   public _filter: CommandLineParameterWithArgument;
@@ -56,8 +60,36 @@ class ListKeysAction extends CommandLineAction {
     const dryRun = this.getFlagParameter("--dry-run").value;
     const filterPattern =
       this.getStringParameter("--filter").value;
-    console.log({ listkeys: "action", dryRun });
     await listKeys(dryRun, filterPattern);
+  }
+}
+
+class GetParamAction extends CommandLineAction {
+  public _dryRun: CommandLineFlagParameter;
+  public _filter: CommandLineParameterWithArgument;
+  public constructor() {
+    super({
+      actionName: "get",
+      documentation:
+        "Get parameter values ",
+      summary: "Get parameters",
+    });
+    this._dryRun = this.defineFlagParameter({
+      parameterLongName: "--dry-run",
+      description: "Run with dummy data",
+    });
+    this._filter = this.defineStringParameter({
+      parameterLongName: "--filter",
+      description:
+        "Es werden nur die Parameter angezeigt, deren Bezeichnung mit dem angegebenen Muster übereinstimmen.",
+      argumentName: "MUSTER",
+    });
+  }
+  protected async onExecuteAsync(): Promise<void> {
+    const dryRun = this.getFlagParameter("--dry-run").value;
+    const filterPattern =
+      this.getStringParameter("--filter").value;
+    await getParam(dryRun, filterPattern);
   }
 }
 

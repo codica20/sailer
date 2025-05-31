@@ -4,18 +4,18 @@ export type VControllerData = {
 };
 
 export type VCDParamValue = {
-  parameter_group_title?:string;
+  parameter_group_title?: string;
   title: string;
-  title_short1: string|null;
+  title_short1: string | null;
   title_translated: string | number;
   value: string;
   factor: string;
-  unit: string|null;
+  unit: string | null;
   /** "0"|"1" */
-  is_readonly:string;
-  parameter_type:string;
+  is_readonly: string;
+  parameter_type: string;
   value_list?: VList;
-//  [key: string]: string | null | number | VList | undefined;
+  //  [key: string]: string | null | number | VList | undefined;
 };
 
 export type VList = { [key: string]: string } | string[];
@@ -34,9 +34,7 @@ export function titles(vControllerData: VControllerData) {
   return uniq(array).sort();
 }
 
-export function sKeys(
-  vControllerData: VControllerData
-) {
+export function sKeys(vControllerData: VControllerData) {
   const result = orgParams(vControllerData).map((param) =>
     sKey(param)
   );
@@ -56,12 +54,15 @@ export function sKey({
 }
 
 /** calculates value from factor and original value.
- * 
+ *
  */
-export function parsedValue({factor,value}:VCDParamValue):number {
-  const parsedFactor=parseFloat(factor);
-  const parsedOrgValue=parseInt(value);
-  const result=parsedFactor*parsedOrgValue;
+export function parsedValue({
+  factor,
+  value,
+}: VCDParamValue): number {
+  const parsedFactor = parseFloat(factor);
+  const parsedOrgValue = parseInt(value);
+  const result = parsedFactor * parsedOrgValue;
   return result;
 }
 
@@ -83,11 +84,29 @@ export function getOrgParam(
     throw Error(`Unique title ${uniqueTitle} not found!`);
 }
 
-export function interpretedValue(param:VCDParamValue) {
-  const title=sKey(param);
-  const value=parsedValue(param);
-  const readOnly=param.is_readonly==="1";
-  const type=param.parameter_type;
+export function interpretedValue(param: VCDParamValue) {
+  const title = sKey(param);
+  const value = parsedValue(param);
+  const readOnly = param.is_readonly === "1";
+  const type = param.parameter_type;
+  const unit = param.unit;
+  return { title, type, unit, value };
+}
+
+export function interpretedValues(
+  vControllerData: VControllerData,
+  filterPattern?: string
+) {
+  const originalParams = orgParams(vControllerData);
+  const filteredParams = filterPattern
+    ? originalParams.filter((param) =>
+        new RegExp(filterPattern).exec(sKey(param))
+      )
+    : originalParams;
+  const interpretedValues = filteredParams.map((param) =>
+    interpretedValue(param)
+  );
+  return interpretedValues;
 }
 
 /** returns an array with unique elements

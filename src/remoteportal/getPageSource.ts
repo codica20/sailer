@@ -26,15 +26,13 @@ export async function getDashboardSource() {
   const submitSelector =
     "button.ibb-button ::-p-text(Anmelden)";
   const elem = await page.waitForSelector(submitSelector);
-  console.log("Waiting before clicking on submit...");
+  //console.log("Waiting before clicking on submit...");
   await setTimeout(500);
-  //await wait4user("Before clicking on submit");
   await page.locator(submitSelector).click();
   await page.waitForSelector(
     "::-p-text(Datenaufzeichnung)"
   );
   const vControllerData = await page.evaluate("vControllerData") as VControllerData;
-  console.log({ result: vControllerData });
   const content = await page.content();
   return { content, browser, vControllerData };
 }
