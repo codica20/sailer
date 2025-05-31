@@ -4,7 +4,7 @@ import {
   orgParams,
   parsedValue,
   titles,
-  uniqTitles,
+  sKeys,
   units,
 } from "./analyzeData";
 
@@ -44,7 +44,7 @@ describe("tests analyzeData.ts", () => {
   });
 
   test("Uniqtitles are unique", () => {
-    const titleArray = uniqTitles(vControllerData);
+    const titleArray = sKeys(vControllerData);
     console.log(
       titleArray.filter((title) => title.includes("UM1"))
     );

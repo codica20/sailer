@@ -11,7 +11,10 @@
     "test:watch": "jest --watch",
     "build": "tsc",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- ",
-    "dev:version": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- '--version'"
+    "dev:version": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- 'version'",
+    "dev:help": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- '--help'",
+    "dev:list-keys-dry-run": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- list-keys '--dry-run'",
+    "dev:list-keys-help": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- list-keys '--help'"
   },
   "keywords": [
     "Sailer",

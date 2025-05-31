@@ -34,16 +34,16 @@ export function titles(vControllerData: VControllerData) {
   return uniq(array).sort();
 }
 
-export function uniqTitles(
+export function sKeys(
   vControllerData: VControllerData
 ) {
   const result = orgParams(vControllerData).map((param) =>
-    uniqTitle(param)
+    sKey(param)
   );
   return result.sort();
 }
 
-export function uniqTitle({
+export function sKey({
   parameter_group_title,
   title,
   title_short1,
@@ -76,7 +76,7 @@ export function getOrgParam(
   uniqueTitle: string
 ): VCDParamValue {
   const result = orgParams(vControllerData).find(
-    (param) => uniqTitle(param) === uniqueTitle
+    (param) => sKey(param) === uniqueTitle
   );
   if (result) return result;
   else
@@ -84,7 +84,7 @@ export function getOrgParam(
 }
 
 export function interpretedValue(param:VCDParamValue) {
-  const title=uniqTitle(param);
+  const title=sKey(param);
   const value=parsedValue(param);
   const readOnly=param.is_readonly==="1";
   const type=param.parameter_type;
