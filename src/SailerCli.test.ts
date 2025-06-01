@@ -4,8 +4,10 @@ describe("Test SailerCli", () => {
   test("Check version action", async () => {
     expect.assertions(1);
     const cli = new SailerCli();
-    const argv = ["version" ];
+    const argv = ["version"];
     await cli.executeAsync(argv);
-    expect(cli.selectedAction?.actionName).toEqual("version");
+    expect(cli.selectedAction?.actionName).toEqual(
+      "version"
+    );
   });
 });

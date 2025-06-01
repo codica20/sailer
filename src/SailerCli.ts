@@ -6,6 +6,7 @@ import {
 } from "@rushstack/ts-command-line";
 import { listKeys } from "./actions/list_keys";
 import { getParam } from "./actions/get_param";
+import { getHAStates } from "./actions/get_ha_states";
 
 export class SailerCli extends CommandLineParser {
   public constructor() {
@@ -15,6 +16,7 @@ export class SailerCli extends CommandLineParser {
     });
     this.addAction(new ListKeysAction());
     this.addAction(new GetParamAction());
+    this.addAction(new GetHAStatesAction());
     this.addAction(new VersionAction());
   }
 }
@@ -36,7 +38,7 @@ class VersionAction extends CommandLineAction {
 
 
 class ListKeysAction extends CommandLineAction {
-  public _dryRun: CommandLineFlagParameter;
+  public _dummyData: CommandLineFlagParameter;
   public _filter: CommandLineParameterWithArgument;
   public constructor() {
     super({
@@ -45,8 +47,8 @@ class ListKeysAction extends CommandLineAction {
         "List possible keys for SAILER values.",
       summary: "List keys",
     });
-    this._dryRun = this.defineFlagParameter({
-      parameterLongName: "--dry-run",
+    this._dummyData = this.defineFlagParameter({
+      parameterLongName: "--dummy-data",
       description: "Run with dummy data",
     });
     this._filter = this.defineStringParameter({
@@ -57,15 +59,15 @@ class ListKeysAction extends CommandLineAction {
     });
   }
   protected async onExecuteAsync(): Promise<void> {
-    const dryRun = this.getFlagParameter("--dry-run").value;
+    const dummyData = this.getFlagParameter("--dummy-data").value;
     const filterPattern =
       this.getStringParameter("--filter").value;
-    await listKeys(dryRun, filterPattern);
+    await listKeys(dummyData, filterPattern);
   }
 }
 
 class GetParamAction extends CommandLineAction {
-  public _dryRun: CommandLineFlagParameter;
+  public _dummyData: CommandLineFlagParameter;
   public _filter: CommandLineParameterWithArgument;
   public constructor() {
     super({
@@ -74,8 +76,8 @@ class GetParamAction extends CommandLineAction {
         "Get parameter values ",
       summary: "Get parameters",
     });
-    this._dryRun = this.defineFlagParameter({
-      parameterLongName: "--dry-run",
+    this._dummyData = this.defineFlagParameter({
+      parameterLongName: "--dummy-data",
       description: "Run with dummy data",
     });
     this._filter = this.defineStringParameter({
@@ -86,10 +88,26 @@ class GetParamAction extends CommandLineAction {
     });
   }
   protected async onExecuteAsync(): Promise<void> {
-    const dryRun = this.getFlagParameter("--dry-run").value;
+    const dummyData = this.getFlagParameter("--dummy-data").value;
     const filterPattern =
       this.getStringParameter("--filter").value;
-    await getParam(dryRun, filterPattern);
+    await getParam(dummyData, filterPattern);
+  }
+}
+
+class GetHAStatesAction extends CommandLineAction {
+  public constructor() {
+    super({
+      actionName: "get-ha-states",
+      documentation:
+        "Get Homeassistant states. Implemented for debugging purposes",
+      summary: "Get Homeassistant states",
+    });
+  }
+  protected async onExecuteAsync(): Promise<void> {
+    console.log("Get states ...")
+    await getHAStates();
+    console.log("get ha states finished.")
   }
 }
 

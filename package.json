@@ -10,10 +10,12 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "build": "tsc",
+    "clean": "rimraf ./dist/ && mkdir ./dist && touch ./dist/index.js && chmod u+x ./dist/index.js",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- ",
     "dev:version": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- 'version'",
     "dev:help": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- '--help'",
-    "dev:list-keys-dry-run": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- list-keys '--dry-run'",
+    "dev:list-keys-dummy-data": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- list-keys '--dummy-data'",
+    "dev:get-ha-states": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- get-ha-states",
     "dev:list-keys-help": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- list-keys '--help'"
   },
   "keywords": [
@@ -30,6 +32,7 @@
     "@types/node": "^22.15.18",
     "jest": "^29.7.0",
     "nodemon": "^3.1.10",
+    "rimraf": "^6.0.1",
     "ts-jest": "^29.3.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"

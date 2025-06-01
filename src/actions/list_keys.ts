@@ -6,11 +6,11 @@ import {
 import { getDashboardSource } from "../remoteportal/getPageSource";
 
 export async function listKeys(
-  dryRun: boolean,
+  dummyData: boolean,
   filterPattern?: string
 ): Promise<void> {
   let data: VControllerData;
-  if (dryRun) {
+  if (dummyData) {
     data = vControllerData;
   } else {
     const source = await getDashboardSource();

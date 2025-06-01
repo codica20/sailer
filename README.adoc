@@ -3,14 +3,51 @@
 == Vorbereitung 
 
 Setze 
+  
   SAILER_PASSWORD=geheim
   SAILER_USER=sailerBenutzer
+  HOME_ASSISTANT_TOKEN=geheimes_Long_Living_Token_aus_Home_Assistant_Einstellungen
+  HOME_ASSISTANT_URL=https://SERVER:8124
 
-Erlaube das Ausführen der mit Puppeteer mitgelieferten Version von Chrome:
+Erlaube das Ausführen der mit Puppeteer mitgelieferten Version von Chrome. Bitte aufwändigen
+unter 
   https://chromium.googlesource.com/chromium/src/+/main/docs/security/apparmor-userns-restrictions.md
+
+beschriebenen Weg nutzen. Die folgende Alternative reißt ein großes Loch in die Sicherheit des 
+Rechners:
+
+```bash
+  echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
+```
+
+== Compilieren
+
+
+```bash
+  npm run build
+```
+
+Nach dem ersten build sollte man ./dist/index.js ausführbar machen:
+  
+```bash
+  chmod u+x ./dist/index.js
+```
+
+Ansonsten bekommt man die Fehlermeldung:
+  
+  sh: 1: sailer: Permission denied
+
 
 == Benutzung
 
 ```bash
   npx sailer --version
+```
+
+== Entwicklung
+
+=== Automatische Tests
+
+```bash
+  npm run test:watch
 ```

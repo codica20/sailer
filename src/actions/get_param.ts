@@ -2,18 +2,17 @@ import { Browser } from "puppeteer";
 import vControllerData from "../../data/vControllerData.json";
 import {
   interpretedValues,
-  sKeys,
   VControllerData,
 } from "../remoteportal/analyzeData";
 import { getDashboardSource } from "../remoteportal/getPageSource";
 
 export async function getParam(
-  dryRun: boolean,
+  dummyData: boolean,
   filterPattern?: string
 ): Promise<void> {
   let data: VControllerData;
   let browser:Browser|undefined;
-  if (dryRun) {
+  if (dummyData) {
     data = vControllerData;
   } else {
     const source = await getDashboardSource();
