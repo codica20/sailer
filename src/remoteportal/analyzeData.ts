@@ -20,6 +20,13 @@ export type VCDParamValue = {
 
 export type VList = { [key: string]: string } | string[];
 
+export type SailerValue = {
+    title: string;
+    type: string;
+    unit: string | null;
+    value: number;
+};
+
 export function units(vControllerData: VControllerData) {
   const unitArray = Object.values(
     vControllerData._parameter
@@ -84,7 +91,7 @@ export function getOrgParam(
     throw Error(`Unique title ${uniqueTitle} not found!`);
 }
 
-export function interpretedValue(param: VCDParamValue) {
+export function interpretedValue(param: VCDParamValue):SailerValue {
   const title = sKey(param);
   const value = parsedValue(param);
   const readOnly = param.is_readonly === "1";
@@ -96,7 +103,7 @@ export function interpretedValue(param: VCDParamValue) {
 export function interpretedValues(
   vControllerData: VControllerData,
   filterPattern?: string
-) {
+):SailerValue[] {
   const originalParams = orgParams(vControllerData);
   const filteredParams = filterPattern
     ? originalParams.filter((param) =>

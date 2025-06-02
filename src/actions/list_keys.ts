@@ -1,3 +1,4 @@
+import { Browser } from "puppeteer";
 import vControllerData from "../../data/vControllerData.json";
 import {
   sKeys,
@@ -10,16 +11,23 @@ export async function listKeys(
   filterPattern?: string
 ): Promise<void> {
   let data: VControllerData;
+  let browser: Browser | undefined;
   if (dummyData) {
     data = vControllerData;
   } else {
     const source = await getDashboardSource();
     data = source.vControllerData;
+    browser=source.browser;
   }
-  let titles = sKeys(data);
+  let sailerKeys = sKeys(data);
   if (filterPattern) {
     const regex = new RegExp(filterPattern);
-    titles = titles.filter((key) => regex.exec(key));
+    sailerKeys = sailerKeys.filter((key) => regex.exec(key));
   }
-  console.log(titles);
+  console.log(sailerKeys);
+  if(browser) {
+    console.log("Closing browser...")
+    await browser.close();
+  }
+
 }
