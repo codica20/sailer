@@ -16,7 +16,8 @@
     "dev:help": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- '--help'",
     "dev:list-keys-dummy-data": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- list-keys '--dummy-data'",
     "dev:get-ha-states": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- get-ha-states",
-    "dev:list-keys-help": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- list-keys '--help'"
+    "dev:list-keys-help": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- list-keys '--help'",
+    "dev:update-ha-state": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' 'src/index.ts' -- update-ha-state --filter 'F1: Koll'"
   },
   "keywords": [
     "Sailer",

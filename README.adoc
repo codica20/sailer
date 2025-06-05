@@ -13,12 +13,23 @@ Erlaube das Ausführen der mit Puppeteer mitgelieferten Version von Chrome. Bitt
 unter 
   https://chromium.googlesource.com/chromium/src/+/main/docs/security/apparmor-userns-restrictions.md
 
-beschriebenen Weg nutzen. Die folgende Alternative reißt ein großes Loch in die Sicherheit des 
-Rechners:
+beschriebenen Weg nutzen. Z.B mit einem AppArmor-Profil für den von Puppeteer unter $HOME/.cache/puppeteer/... 
+installierten chrome:
+  ```bash
+    ./helpers/chromeSandbox.sh
+  ```
+  
+
+
+
+Die folgende Alternative reißt ein großes Loch in die Sicherheit des 
+Rechners und ist NICHT empfilgen:
 
 ```bash
   echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
 ```
+
+
 
 == Compilieren
 
