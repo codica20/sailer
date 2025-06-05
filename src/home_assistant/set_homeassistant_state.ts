@@ -21,7 +21,9 @@ export async function setHomeAssistantState(
   const headers = await getHAAuthHeaders();
   const body = JSON.stringify(
     {
-      state: sailerValue.value,
+      // round to one digit
+      // See https://stackoverflow.com/questions/9339870/how-to-reduce-numbers-significance-in-jsons-stringify
+      state: Number(sailerValue.value.toFixed(1)),
       attributes: {
         state_class: "measurement",
         device_class: "temperature",
