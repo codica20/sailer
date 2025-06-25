@@ -13,7 +13,7 @@ export async function setHomeAssistantState(
     throw new Error(
       `Einheit ${sailerValue.unit} von ${sailerValue.title} wird noch nicht unterstützt.`
     );
-  const haEntity = getHASensorEntityID(
+  const haEntity:string = getHASensorEntityID(
     sensorKind,
     prefix,
     sailerValue.title
@@ -28,6 +28,7 @@ export async function setHomeAssistantState(
         state_class: "measurement",
         device_class: "temperature",
         unit_of_measurement: sailerValue.unit,
+        unique_id: `${haEntity}`
       },
     },
     undefined,

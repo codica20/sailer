@@ -2,6 +2,11 @@
 
 == Vorbereitung 
 
+```bash
+  npm install
+  npm install puppeteer
+```
+
 Setze 
   
   SAILER_PASSWORD=geheim
