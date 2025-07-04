@@ -9,3 +9,6 @@ export const sailerUser=process.env.SAILER_USER;
 
 export const homeAssistantUrl=process.env.HOME_ASSISTANT_URL;
 export const homeAssistantToken=process.env.HOME_ASSISTANT_TOKEN;
+
+
+export const mqttServerHost=process.env.MQTT_SERVER_HOST;

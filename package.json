@@ -41,6 +41,7 @@
   "dependencies": {
     "@rushstack/ts-command-line": "^5.0.1",
     "dotenv": "^16.5.0",
+    "mqtt": "^5.13.1",
     "puppeteer": "^24.9.0"
   }
 }

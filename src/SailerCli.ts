@@ -10,6 +10,7 @@ import { listKeys } from "./actions/list_keys";
 import { getParam } from "./actions/get_param";
 import { getHAStates } from "./actions/get_ha_states";
 import { updateHAState } from "./actions/update_ha_state";
+import { UpdateMqttStateAction } from "./actions/update_mqtt_state";
 
 export class SailerCli extends CommandLineParser {
   public constructor() {
@@ -19,6 +20,7 @@ export class SailerCli extends CommandLineParser {
     });
     this.addAction(new ListKeysAction());
     this.addAction(new GetParamAction());
+    this.addAction(new UpdateMqttStateAction());
     this.addAction(new UpdateHAStateAction());
     this.addAction(new GetHAStatesAction());
     this.addAction(new VersionAction());
