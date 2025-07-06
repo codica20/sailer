@@ -7,10 +7,10 @@ import { VControllerData } from "./analyzeData";
 /** returns the content of the dashboard page of the sailer remote portal.
  * Do NOT forget to close the browser after calling the function.
  */
-export async function getDashboardSource() {
+export async function getDashboardSource(options?:{headless: boolean}) {
   const startUrl = "https://sailer.remoteportal.de/";
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: options?.headless,
   });
   const page = await browser.newPage();
   await page.goto(startUrl);

@@ -13,6 +13,8 @@ Setze
   SAILER_USER=sailerBenutzer
   HOME_ASSISTANT_TOKEN=geheimes_Long_Living_Token_aus_Home_Assistant_Einstellungen
   HOME_ASSISTANT_URL=https://SERVER:8124
+  MQTT_SERVER_HOST=localhost
+  MQTT_HA_DISCOVERY_PREFIX=myhome/homeassistant/mqtt_discovery
 
 Erlaube das Ausführen der mit Puppeteer mitgelieferten Version von Chrome. Bitte aufwändigen
 unter 

@@ -30,10 +30,20 @@ export async function publishMqttState(
   const mqttHost: string = getMqttHost(options);
 
   //------------ publish mqtt discovery ----------------
-  const mqttDiscoveryTopic=getMqttDiscoveryTopic(sailerValue,options);
-  const mqttDiscoveryMessage=getMqttDiscoveryMessage(sailerValue,options);
+  const mqttDiscoveryTopic = getMqttDiscoveryTopic(
+    sailerValue,
+    options
+  );
+  const mqttDiscoveryMessage = getMqttDiscoveryMessage(
+    sailerValue,
+    options
+  );
 
-  await publishMqttMessage(mqttHost,mqttDiscoveryTopic,mqttDiscoveryMessage);
+  await publishMqttMessage(
+    mqttHost,
+    mqttDiscoveryTopic,
+    mqttDiscoveryMessage
+  );
 
   // ---------- publish Mqtt State --------------
   const mqttTopic: string = getMqttStateTopic(
@@ -66,7 +76,7 @@ function getMqttMessage(
   sailerValue: SailerValue,
   options: MqttOptions
 ) {
-  return  sailerValue.value.toFixed(1);
+  return sailerValue.value.toFixed(1);
 }
 
 /**
@@ -100,12 +110,17 @@ function getMqttEntityName(
   sailerValue: SailerValue,
   options: Pick<MqttOptions, "entityPrefix">
 ) {
-  return (
-    `${options.entityPrefix}${encodeChars(sailerValue.title)}`
-  );
+  return `${options.entityPrefix}${encodeChars(
+    sailerValue.title
+  )}`;
 }
 
 type MqttEntityDiscoveryMessage = {
+  /** Name of the entity
+   *
+   */
+  name: string;
+
   /** Todo: should implement other device classes
    *
    */
@@ -139,6 +154,7 @@ function getMqttDiscoveryMessage(
       `Einheit ${sailerValue.unit} of ${sailerValue.title} wird noch nicht unterstützt.`
     );
   const msg: MqttEntityDiscoveryMessage = {
+    name: sailerValue.title,
     unique_id: getMqttEntityName(sailerValue, options),
     device_class: "temperature",
     state_topic: getMqttStateTopic(sailerValue, options),
@@ -146,6 +162,7 @@ function getMqttDiscoveryMessage(
     device: {
       identifiers: [getSailerDeviceName(options)],
       name: getSailerDeviceName(options),
+      manufacturer: "Sailer Ehingen",
     },
     origin: { name: "sailer_cli" },
   };
@@ -175,10 +192,7 @@ async function publishMqttMessage(
   mqttMessage: string
 ): Promise<void> {
   const client = await connectAsync(mqttHost);
-  const packet = await client.publishAsync(
-    mqttTopic,
-    mqttMessage
-  );
-  console.log({ packet });
+  await client.publishAsync(mqttTopic, mqttMessage);
+  console.log({ mqttHost, mqttTopic, mqttMessage });
   await client.endAsync();
 }
