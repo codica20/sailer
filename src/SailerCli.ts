@@ -50,7 +50,7 @@ class ListKeysAction extends CommandLineAction {
       actionName: "list-keys",
       documentation:
         "List possible keys for SAILER values.",
-      summary: "List keys",
+      summary: "List keys from SAILER",
     });
     this._dummyData = this.defineFlagParameter({
       parameterLongName: "--dummy-data",

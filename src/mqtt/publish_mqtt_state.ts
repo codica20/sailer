@@ -126,6 +126,8 @@ type MqttEntityDiscoveryMessage = {
    */
   device_class: "temperature";
 
+  state_class: "measurement";
+
   state_topic: string;
 
   /** Todo: should implement other units
@@ -157,6 +159,7 @@ function getMqttDiscoveryMessage(
     name: sailerValue.title,
     unique_id: getMqttEntityName(sailerValue, options),
     device_class: "temperature",
+    state_class: "measurement",
     state_topic: getMqttStateTopic(sailerValue, options),
     unit_of_measurement: sailerValue.unit,
     device: {
