@@ -12,3 +12,5 @@ export const homeAssistantToken=process.env.HOME_ASSISTANT_TOKEN;
 
 
 export const mqttServerHost=process.env.MQTT_SERVER_HOST;
+
+export const mqttHaDiscoveryPrefix=process.env.MQTT_HA_DISCOVERY_PREFIX;

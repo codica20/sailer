@@ -1,17 +1,42 @@
 import { connectAsync } from "mqtt";
-import { mqttServerHost } from "../config";
+import {
+  mqttHaDiscoveryPrefix,
+  mqttServerHost,
+} from "../config";
 import { SailerValue } from "../remoteportal/analyzeData";
+import { encodeChars } from "../utils/encodeChars";
+import { jsoning } from "../utils/jsoning";
 
 export type MqttOptions = {
-  prefix: string;
-  sensorKind: string;
+  /** See getMqttEntityName */
+  entityPrefix?: string;
+
+  /** the mqtt state topic path prefix, i.e. everything before the name of the entity.
+   *  Default: "sailer"
+   */
+  stateTopicPathPrefix?: string;
+
+  /** Sailer Device Name (as displayed in Home Assistant).
+   * Default: "SAILER"
+   */
+  sailerDeviceName?: string;
 };
 export async function publishMqttState(
   sailerValue: SailerValue,
   options: MqttOptions
 ): Promise<void> {
   console.log({ sailerValue, options });
-  const mqttTopic: string = getMqttTopic(
+
+  const mqttHost: string = getMqttHost(options);
+
+  //------------ publish mqtt discovery ----------------
+  const mqttDiscoveryTopic=getMqttDiscoveryTopic(sailerValue,options);
+  const mqttDiscoveryMessage=getMqttDiscoveryMessage(sailerValue,options);
+
+  await publishMqttMessage(mqttHost,mqttDiscoveryTopic,mqttDiscoveryMessage);
+
+  // ---------- publish Mqtt State --------------
+  const mqttTopic: string = getMqttStateTopic(
     sailerValue,
     options
   );
@@ -19,8 +44,6 @@ export async function publishMqttState(
     sailerValue,
     options
   );
-  const mqttHost: string = getMqttHost(options);
-
   await publishMqttMessage(
     mqttHost,
     mqttTopic,
@@ -29,17 +52,21 @@ export async function publishMqttState(
   //TODO: mqtt Discovery
 }
 
-function getMqttTopic(
+function getMqttStateTopic(
   sailerValue: SailerValue,
   options: MqttOptions
 ) {
-  return "hello/world";
+  return (
+    (options.stateTopicPathPrefix || "sailer") +
+    "/" +
+    getMqttEntityName(sailerValue, options)
+  );
 }
 function getMqttMessage(
   sailerValue: SailerValue,
   options: MqttOptions
 ) {
-  return "(" + sailerValue.value + ")";
+  return  sailerValue.value.toFixed(1);
 }
 
 /**
@@ -50,6 +77,95 @@ function getMqttMessage(
  */
 function getMqttHost(options: MqttOptions) {
   return "mqtt://" + (mqttServerHost || "localhost");
+}
+
+function getMqttDiscoveryTopic(
+  sailerValue: SailerValue,
+  options: MqttOptions
+): string {
+  if (sailerValue.unit !== "°C")
+    throw new Error(
+      `Einheit ${sailerValue.unit} of ${sailerValue.title} wird noch nicht unterstützt.`
+    );
+  return (
+    getMqttDiscoveryPrefix() +
+    "/sensor/" +
+    getMqttEntityName(sailerValue, options) +
+    "/config"
+  );
+}
+
+/** returns prefix plus encoded sailerValue.title. It is used in Mqtt Discovery Topic and Mqtt State Topic  */
+function getMqttEntityName(
+  sailerValue: SailerValue,
+  options: Pick<MqttOptions, "entityPrefix">
+) {
+  return (
+    `${options.entityPrefix}${encodeChars(sailerValue.title)}`
+  );
+}
+
+type MqttEntityDiscoveryMessage = {
+  /** Todo: should implement other device classes
+   *
+   */
+  device_class: "temperature";
+
+  state_topic: string;
+
+  /** Todo: should implement other units
+   *
+   */
+  unit_of_measurement: "°C";
+
+  unique_id: string;
+
+  device: {
+    identifiers: string[];
+    name: string;
+    manufacturer?: string;
+    model?: string;
+    model_id?: string;
+  };
+  origin: { name: "sailer_cli" };
+};
+
+function getMqttDiscoveryMessage(
+  sailerValue: SailerValue,
+  options: MqttOptions
+): string {
+  if (sailerValue.unit !== "°C")
+    throw new Error(
+      `Einheit ${sailerValue.unit} of ${sailerValue.title} wird noch nicht unterstützt.`
+    );
+  const msg: MqttEntityDiscoveryMessage = {
+    unique_id: getMqttEntityName(sailerValue, options),
+    device_class: "temperature",
+    state_topic: getMqttStateTopic(sailerValue, options),
+    unit_of_measurement: sailerValue.unit,
+    device: {
+      identifiers: [getSailerDeviceName(options)],
+      name: getSailerDeviceName(options),
+    },
+    origin: { name: "sailer_cli" },
+  };
+
+  return jsoning(msg);
+}
+
+/** returns options.sailerDeviceName or "SAILER" */
+function getSailerDeviceName({
+  sailerDeviceName,
+}: Pick<MqttOptions, "sailerDeviceName">): string {
+  return sailerDeviceName || "SAILER";
+}
+
+/** returns the homeassistant mqtt discovery prefix
+ *
+ * @see https://www.home-assistant.io/integrations/mqtt/#mqtt-discovery
+ */
+function getMqttDiscoveryPrefix() {
+  return mqttHaDiscoveryPrefix || "homeassistant";
 }
 
 /** low level function to publish to MQTT Host */
