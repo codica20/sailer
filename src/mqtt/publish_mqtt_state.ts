@@ -76,7 +76,13 @@ function getMqttMessage(
   sailerValue: SailerValue,
   options: MqttOptions
 ) {
-  return sailerValue.value.toFixed(1);
+  return sailerValue.type === "bit"
+    ? bool2OnOff(sailerValue.value)
+    : sailerValue.value.toFixed(1);
+}
+
+function bool2OnOff(value: boolean) {
+  return value ? "ON" : "OFF";
 }
 
 /**
@@ -93,13 +99,18 @@ function getMqttDiscoveryTopic(
   sailerValue: SailerValue,
   options: MqttOptions
 ): string {
-  if (sailerValue.unit !== "°C")
+  if (
+    sailerValue.type !== "bit" &&
+    sailerValue.unit !== "°C"
+  )
     throw new Error(
-      `Einheit ${sailerValue.unit} of ${sailerValue.title} wird noch nicht unterstützt.`
+      `Einheit ${sailerValue.unit} bzw. Typ ${sailerValue.type} von ${sailerValue.title} werden noch nicht unterstützt.`
     );
   return (
     getMqttDiscoveryPrefix() +
-    "/sensor/" +
+    (sailerValue.type !== "bit"
+      ? "/sensor/"
+      : "/binary_sensor/") +
     getMqttEntityName(sailerValue, options) +
     "/config"
   );
@@ -115,7 +126,17 @@ function getMqttEntityName(
   )}`;
 }
 
-type MqttEntityDiscoveryMessage = {
+type MqttBinarySensorEntityDiscoveryMessage = Pick<
+  MqttSensorEntityDiscoveryMessage,
+  | "name"
+  | "state_topic"
+  | "state_class"
+  | "unique_id"
+  | "device"
+  | "origin"
+> & { device_class: "heat" };
+
+type MqttSensorEntityDiscoveryMessage = {
   /** Name of the entity
    *
    */
@@ -151,26 +172,45 @@ function getMqttDiscoveryMessage(
   sailerValue: SailerValue,
   options: MqttOptions
 ): string {
-  if (sailerValue.unit !== "°C")
-    throw new Error(
-      `Einheit ${sailerValue.unit} of ${sailerValue.title} wird noch nicht unterstützt.`
-    );
-  const msg: MqttEntityDiscoveryMessage = {
-    name: sailerValue.title,
-    unique_id: getMqttEntityName(sailerValue, options),
-    device_class: "temperature",
-    state_class: "measurement",
-    state_topic: getMqttStateTopic(sailerValue, options),
-    unit_of_measurement: sailerValue.unit,
-    device: {
-      identifiers: [getSailerDeviceName(options)],
-      name: getSailerDeviceName(options),
-      manufacturer: "Sailer Ehingen",
-    },
-    origin: { name: "sailer_cli" },
-  };
+  if (sailerValue.type === "bit") {
+    const msg: MqttBinarySensorEntityDiscoveryMessage = {
+      name: sailerValue.title,
+      unique_id: getMqttEntityName(sailerValue, options),
+      device_class: "heat",
+      state_class: "measurement",
+      state_topic: getMqttStateTopic(sailerValue, options),
+      device: {
+        identifiers: [getSailerDeviceName(options)],
+        name: getSailerDeviceName(options),
+        manufacturer: "Sailer Ehingen",
+      },
+      origin: { name: "sailer_cli" },
+    };
 
-  return jsoning(msg);
+    return jsoning(msg);
+  }
+  if (sailerValue.unit === "°C") {
+    const msg: MqttSensorEntityDiscoveryMessage = {
+      name: sailerValue.title,
+      unique_id: getMqttEntityName(sailerValue, options),
+      device_class: "temperature",
+      state_class: "measurement",
+      state_topic: getMqttStateTopic(sailerValue, options),
+      unit_of_measurement: sailerValue.unit,
+      device: {
+        identifiers: [getSailerDeviceName(options)],
+        name: getSailerDeviceName(options),
+        manufacturer: "Sailer Ehingen",
+      },
+      origin: { name: "sailer_cli" },
+    };
+
+    return jsoning(msg);
+  }
+
+  throw new Error(
+    `Einheit ${sailerValue.unit} bzw. Typ ${sailerValue.type} von  ${sailerValue.title} wird noch nicht unterstützt.`
+  );
 }
 
 /** returns options.sailerDeviceName or "SAILER" */

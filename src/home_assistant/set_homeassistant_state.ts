@@ -1,6 +1,7 @@
 import { homeAssistantUrl } from "../config";
 import { SailerValue } from "../remoteportal/analyzeData";
 import { encodeChars } from "../utils/encodeChars";
+import { jsoning } from "../utils/jsoning";
 import { getHAAuthHeaders } from "./home_assistant_common";
 
 export async function setHomeAssistantState(
@@ -10,11 +11,17 @@ export async function setHomeAssistantState(
     sensorKind,
   }: { prefix: string; sensorKind: string }
 ) {
+  if (sailerValue.type !== "variable")
+    throw new Error(
+      `Typ ${sailerValue.type} in ${jsoning(
+        sailerValue
+      )} wird noch nicht unterstützt.`
+    );
   if (sailerValue.unit !== "°C")
     throw new Error(
       `Einheit ${sailerValue.unit} von ${sailerValue.title} wird noch nicht unterstützt.`
     );
-  const haEntity:string = getHASensorEntityID(
+  const haEntity: string = getHASensorEntityID(
     sensorKind,
     prefix,
     sailerValue.title
@@ -29,7 +36,7 @@ export async function setHomeAssistantState(
         state_class: "measurement",
         device_class: "temperature",
         unit_of_measurement: sailerValue.unit,
-        unique_id: `${haEntity}`
+        unique_id: `${haEntity}`,
       },
     },
     undefined,
@@ -65,5 +72,3 @@ function getHASensorEntityID(
   )}${encodeChars(sKey)}`;
   return sensorKey;
 }
-
-

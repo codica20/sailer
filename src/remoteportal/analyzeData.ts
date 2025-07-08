@@ -1,3 +1,5 @@
+import { jsoning } from "../utils/jsoning";
+
 export type VControllerData = {
   [key: string]: any;
   _parameter: { [key: string]: VCDParamValue };
@@ -13,7 +15,7 @@ export type VCDParamValue = {
   unit: string | null;
   /** "0"|"1" */
   is_readonly: string;
-  parameter_type: string;
+  parameter_type: string; // "variable" | "bit";
   value_list?: VList;
   //  [key: string]: string | null | number | VList | undefined;
 };
@@ -21,10 +23,17 @@ export type VCDParamValue = {
 export type VList = { [key: string]: string } | string[];
 
 export type SailerValue = {
-    title: string;
-    type: string;
-    unit: string | null;
-    value: number;
+  title: string;
+} & (SailerVariable | SailerBit);
+
+export type SailerVariable = {
+  type: "variable";
+  unit: string | null;
+  value: number;
+};
+export type SailerBit = {
+  type: "bit";
+  value: boolean;
 };
 
 export function units(vControllerData: VControllerData) {
@@ -63,7 +72,7 @@ export function sKey({
 /** calculates value from factor and original value.
  *
  */
-export function parsedValue({
+export function parsedNumberValue({
   factor,
   value,
 }: VCDParamValue): number {
@@ -91,19 +100,34 @@ export function getOrgParam(
     throw Error(`Unique title ${uniqueTitle} not found!`);
 }
 
-export function interpretedValue(param: VCDParamValue):SailerValue {
+export function interpretedValue(
+  param: VCDParamValue
+): SailerValue {
   const title = sKey(param);
-  const value = parsedValue(param);
-  const readOnly = param.is_readonly === "1";
-  const type = param.parameter_type;
-  const unit = param.unit;
-  return { title, type, unit, value };
+  switch (param.parameter_type) {
+    case "bit": {
+      const value = param.value === "1";
+      return { title, type: "bit", value };
+    }
+    case "variable":
+      const value = parsedNumberValue(param);
+      const readOnly = param.is_readonly === "1";
+      const type = param.parameter_type;
+      const unit = param.unit;
+      return { title, type, unit, value };
+    default:
+      throw new Error(
+        `Parameter_type ${
+          param.parameter_type
+        } wird nicht unterstützt.\n${jsoning(param)}`
+      );
+  }
 }
 
 export function interpretedValues(
   vControllerData: VControllerData,
   filterPattern?: string
-):SailerValue[] {
+): SailerValue[] {
   const originalParams = orgParams(vControllerData);
   const filteredParams = filterPattern
     ? originalParams.filter((param) =>

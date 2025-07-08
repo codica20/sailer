@@ -2,7 +2,7 @@ import vControllerData from "../../data/vControllerData.json";
 import {
   getOrgParam,
   orgParams,
-  parsedValue,
+  parsedNumberValue,
   titles,
   sKeys,
   units,
@@ -59,7 +59,7 @@ describe("tests analyzeData.ts", () => {
     );
     console.log({ result });
     expect(result.value).toEqual("192");
-    expect(parsedValue(result)).toBeCloseTo(19.2);
+    expect(parsedNumberValue(result)).toBeCloseTo(19.2);
   });
 
 
@@ -70,6 +70,6 @@ describe("tests analyzeData.ts", () => {
     );
     console.log({ result });
     expect(result.value).toEqual("1");
-    expect(parsedValue(result)).toEqual(1);
+    expect(parsedNumberValue(result)).toEqual(1);
   });
 });
