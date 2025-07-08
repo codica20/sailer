@@ -60,7 +60,15 @@ Ansonsten bekommt man die Fehlermeldung:
 
 ```bash
   npx sailer --version
+  npx sailer --help
+  npx sailer list-keys --help
+  npx sailer list-keys
+  npx sailer list-keys --filter "F3: Speicher"
+  npx sailer list-keys --filter "^(F1: Kollektor|F3: Speicher)"
+  npx sailer update-mqtt-state --filter "^(F1: Kollektor|F3: Speicher)" 
 ```
+
+Die '''--filter'''-Option erlaubt reguläre Ausdrücke (RegEx).
 
 == Entwicklung
 

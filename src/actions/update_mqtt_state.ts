@@ -24,18 +24,19 @@ export async function updateMqttState(
   params: MqttOptions & FilterOption & HeadlessOption
 ) {
   const { vControllerData, browser } =
-    await getDashboardSource({headless:params.headlessBrowser});
+    await getDashboardSource({
+      headless: params.headlessBrowser,
+    });
   try {
     const sailerValues = interpretedValues(
       vControllerData,
       params.filterPattern
     );
-    if (sailerValues.length !== 1) {
-      throw new Error(
-        `Expected one single SAILER param instead of ${sailerValues.length}. Please narrow with --filter!`
-      );
-    }
-    await publishMqttState(sailerValues[0], params);
+    await Promise.all(
+      sailerValues.map((sailerValue) =>
+        publishMqttState(sailerValue, params)
+      )
+    );
   } finally {
     await browser.close();
   }
@@ -46,7 +47,6 @@ export class UpdateMqttStateAction extends HeadlessOptionAction {
   public _entityPrefix: CommandLineStringParameter;
   public _sailerDeviceName: CommandLineStringParameter;
   public _stateTopicPathPrefix: CommandLineStringParameter;
-
 
   public constructor() {
     super({
@@ -99,13 +99,13 @@ export class UpdateMqttStateAction extends HeadlessOptionAction {
     const stateTopicPathPrefix = this.getStringParameter(
       "--state-topic-path-prefix"
     ).value;
-    const headlessBrowser= this.getHeadlessBrowser();
+    const headlessBrowser = this.getHeadlessBrowser();
     await updateMqttState({
       filterPattern,
       entityPrefix,
       sailerDeviceName,
       stateTopicPathPrefix,
-      headlessBrowser
+      headlessBrowser,
     });
   }
 }
