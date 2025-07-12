@@ -1,4 +1,16 @@
 = sailer_cli - Zugriff auf Sailer-Remoteportal von der Kommandozeile
+:toc:
+
+Mit sailer_cli kann man Werte aus dem Remoteportal von SAILER auslesen. 
+
+Diese Werte kann man dann via MQTT z.B. an HomeAssistant weitergeben.
+Außerdem konnte man bzw. kann man noch Werte über HTTP direkt an den 
+HomeAssistant-Server weitergeben.
+
+Sailer_cli nutze ich für private, nicht kritische Use-Cases. Es funktioniert bei mir. 
+Ob es bei anderen funktioniert, interessiert mich zwar - bitte bei Gelegenheit mitteilen!
+Aber ich weiß es nicht und kann nur davor **warnen**, es einzusetzen, ohne vorher in den Code
+geschaut zu haben.
 
 == Vorbereitung 
 
@@ -30,7 +42,7 @@ installierten chrome:
 
 
 Die folgende Alternative reißt ein großes Loch in die Sicherheit des 
-Rechners und ist NICHT empfilgen:
+Rechners und ist NICHT empfehlen:
 
 ```bash
   echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
