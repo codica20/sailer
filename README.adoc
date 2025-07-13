@@ -1,9 +1,9 @@
-= sailer_cli - Zugriff auf Sailer-Remoteportal von der Kommandozeile
+= sailer_cli: Sailer-Remoteportal von der Kommandozeile
 :toc:
 
-Mit sailer_cli kann man Werte aus dem Remoteportal von SAILER auslesen. 
+Mit sailer_cli kann man Werte aus dem https://www.sailergmbh.de/de/produkte/systemregler/remote-portal.html[Remoteportal von SAILER] auslesen. 
 
-Diese Werte kann man dann via MQTT z.B. an HomeAssistant weitergeben.
+Diese Werte kann man dann via https://mqtt.org/[MQTT] z.B. an https://www.home-assistant.io/[HomeAssistant] weitergeben.
 Außerdem konnte man bzw. kann man noch Werte über HTTP direkt an den 
 HomeAssistant-Server weitergeben.
 
@@ -86,6 +86,14 @@ Die '''--filter'''-Option erlaubt reguläre Ausdrücke (RegEx).
 
 === Automatische Tests
 
+Die automatischen Tests müssen noch deutlich erweitert werden.
+
 ```bash
   npm run test:watch
 ```
+== Siehe auch
+
+* https://www.sailergmbh.de/de/produkte/systemregler/remote-portal.html[Remote-Portal von Sailer Ehingen]
+* https://www.home-assistant.io/[HomeAssistant]
+* https://www.home-assistant.io/integrations/mqtt/[HomeAssistant MQTT integration]
+* https://mosquitto.org/[Mosquitto], ein MQTT Broker
